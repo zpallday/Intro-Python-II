@@ -54,7 +54,7 @@ while True:
         Zach.current_room = Zach.current_room.e_to
     elif (myInput == 'q'):
           print(f"Thanks for you playing")
-    else: print("You shall not pass")
+    else: print(f"You shall not pass")
 # * Prints the current room name
 # * Prints the current description (the textwrap module might be useful here).
 # * Waits for user input and decides what to do.
