@@ -1,6 +1,22 @@
 from room import Room
 from player import Player
+from item import Item
+import textwrap
 # Declare all the rooms
+
+
+
+
+Backpack = Item('Backpack', 'To store your stuff')
+Flashlight: Item('Flashlight', "I can now see")
+Sword = Item('Sword', 'You need this to protect yourself')
+Bow = Item('Bow', 'bow to shot long distances')
+Treasure = Item("Treasure chest", "Someone took all of it")
+
+
+
+
+
 
 room = {
     'outside':  Room("Outside Cave Entrance",
@@ -22,7 +38,8 @@ earlier adventurers. The only exit is to the south."""),
 }
 
 
-# Link rooms together
+
+
 
 room['outside'].n_to = room['foyer']
 room['foyer'].s_to = room['outside']
@@ -33,28 +50,83 @@ room['narrow'].w_to = room['foyer']
 room['narrow'].n_to = room['treasure']
 room['treasure'].s_to = room['narrow']
 
+
+
+
+outside = room["outside"]
+foyer = room["foyer"]
+overlook = room["overlook"]
+narrow = room["narrow"]
+treasure = room["treasure"]
+
+
+outside.add_items(Backpack, Flashlight)
+foyer.add_items(Sword)
+overlook.add_items(Bow)
+treasure.add_items(Treasure)
+
+
+
+
+
 #
 # Main
 #
 
 # Make a new player object that is currently in the 'outside' room.
-Zach = Player('Zach', room['outside']) 
+name = input("\n What is your name? : ")
+player = Player(name, room['outside'])
+
 # Write a loop that:
 while True:
-    print(Zach.current_room.name)
-    print(Zach.current_room.description)
-    myInput = input(f"Which direction do you want to go?: ")
-    if (myInput == 'n'):
-         Zach.current_room = Zach.current_room.n_to
-    elif  (myInput == 'w'):
-        Zach.current_room = Zach.current_room.w_to
-    elif (myInput =='s'):
-        Zach.current_room = Zach.current_room.s_to
-    elif (myInput == 'e'):
-        Zach.current_room = Zach.current_room.e_to
-    elif (myInput == 'q'):
-          print(f"Thanks for you playing")
-    else: print(f"You shall not pass")
+    print(player.current_room.name)
+    print(player.current_room.description)
+    if  len(player.current_room.items) >= 1:
+        print("\n<<< Items in this room >>>")
+    for item in player.current_room.items:
+        print(f" {item.name}: {item.description}")
+    if len(player.current_room.items) == 0:
+        print("\n<<< No items in this room >>>")
+
+    Input = input(f"Which direction do you want to go?: ")
+
+    if (Input == 'n'):
+         player.current_room = player.current_room.n_to
+    elif  (Input == 'w'):
+        player.current_room = player.current_room.w_to
+    elif (Input =='s'):
+        player.current_room = player.current_room.s_to
+    elif (Input == 'e'):
+        player.current_room = player.current_room.e_to
+    elif (Input == 'q'):
+          print(f"Thanks for playing")
+          break
+    elif (Input == 'i'):
+        print(f"\n<<< Player inventory >>>")
+        for item in player.inventory:
+            print(f" {item.name}: {item.description}") 
+
+
+    elif(Input.split()[0] == 'Get'):
+        for item in player.current_room.items:
+            if item.name == Input.split()[1]:
+               player.pick_item(item)
+               print(f"\n<<< You picked up the{Input[3:]} >>>")
+
+    elif(Input.split()[0] == 'Set'):
+        for item in player.inventory:
+            if item.name == Input.split()[1]:
+               player.drop_item(item)
+               print(f"\n<<< You dropped up your{Input[3:]} >>>")
+
+    elif(Input == 'Command'):
+        print(f" \n<<< n = Go North, e = Go East, s = Go South, w = Go West, Get [ITEM NAME] = Add item to inventory,\n Drop [ITEM NAME] =Drop item from inventory, i = Inventory, q = Quit game >>>")
+
+    else: print(f"That's the wrong key")
+
+   
+   
+    
 # * Prints the current room name
 # * Prints the current description (the textwrap module might be useful here).
 # * Waits for user input and decides what to do.
